@@ -9,4 +9,24 @@ public class GewinnModel {
     public GewinnModel() {
         this.gesamtPunkte = 30; // Startpunkte laut Regeln
     }
+
+    public void berechneComputerZahl() {
+        Random random = new Random();
+        this.computerZahl = random.nextInt(9) + 1; // Zahl von 1 bis 9
+    }
+
+    public void berechneRunde(int spielerZahl) {
+        this.spielerZahl = spielerZahl;
+        berechneComputerZahl();
+
+        if (this.spielerZahl == this.computerZahl) {
+            this.rundenErgebnis = 20;
+        } else if (Math.abs(this.spielerZahl - this.computerZahl) == 1) {
+            this.rundenErgebnis = 5;
+        } else {
+            this.rundenErgebnis = -10;
+        }
+
+        this.gesamtPunkte += this.rundenErgebnis;
+    }
 }
