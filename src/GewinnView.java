@@ -25,7 +25,6 @@ public class GewinnView extends JFrame {
     public GewinnView() {
 
         model = new GewinnModel();
-
         // Grundlegende Einstellungen für das Hauptfenster
         setTitle("Zahlen-Gewinnspiel (v1.0)");
         setSize(450, 300);
@@ -93,6 +92,60 @@ public class GewinnView extends JFrame {
         panelUnten.add(btnNochEinmal);
 
         add(panelUnten, BorderLayout.SOUTH);
+        initController();
+    }
+
+    /**
+     * Registriert die Enter-Taste im Eingabefeld und verknüpft sie mit der Spiellogik.
+     */
+    public void initController() {
+        txtSpielerZahl.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent e) {
+                if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+                    spielZugAusfuehren();
+                }
+            }
+        });
+    }
+
+    /**
+     * Verarbeitet die Spielereingabe, berechnet die Runde über das Model und aktualisiert die Anzeige.
+     */
+    private void spielZugAusfuehren() {
+        try {
+            String eingabe = txtSpielerZahl.getText().trim();
+            int zahl = Integer.parseInt(eingabe);
+
+            if (zahl < 1 || zahl > 9) {
+                JOptionPane.showMessageDialog(this, "Bitte gib eine Zahl zwischen 1 und 9 ein!", "Ungültige Eingabe", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            model.berechneRunde(zahl);
+            txtComputerZahl.setText(String.valueOf(model.getComputerZahl()));
+
+            int erg = model.getRundenErgebnis();
+            if (erg == 20) {
+                lblRundenErgebnisWert.setText("Treffer! (+20)");
+            } else if (erg == 5) {
+                lblRundenErgebnisWert.setText("Knapp daneben! (+5)");
+            } else {
+                lblRundenErgebnisWert.setText("Verloren (-10)");
+            }
+            lblGesamtPunkteWert.setText("Gesamtpunkte: " + model.getGesamtPunkte());
+
+            if (model.hatGewonnen()) {
+                JOptionPane.showMessageDialog(this, "Herzlichen Glückwunsch! Du hast gewonnen!", "Gewonnen", JOptionPane.INFORMATION_MESSAGE);
+                txtSpielerZahl.setEnabled(false);
+            } else if (model.hatVerloren()) {
+                JOptionPane.showMessageDialog(this, "Leider verloren! Der Punktestand ist bei 0.", "Verloren", JOptionPane.ERROR_MESSAGE);
+                txtSpielerZahl.setEnabled(false);
+            }
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Bitte gib eine gültige Zahl ein!", "Fehler", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void main(String[] args) {
