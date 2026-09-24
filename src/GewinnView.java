@@ -92,7 +92,11 @@ public class GewinnView extends JFrame {
         panelUnten.add(btnNochEinmal);
 
         add(panelUnten, BorderLayout.SOUTH);
+
         initController();
+
+        // Registriert den Klick auf den Reset-Button
+        btnNochEinmal.addActionListener(e -> zuruecksetzen());
     }
 
     /**
@@ -148,6 +152,20 @@ public class GewinnView extends JFrame {
         }
     }
 
+    /**
+     * Setzt die Runde und die Eingabefelder zurück, behält aber den Gesamtpunktestand bei.
+     */
+    private void zuruecksetzen() {
+        txtSpielerZahl.setText("");
+        txtComputerZahl.setText("");
+        lblRundenErgebnisWert.setText("Tippe eine Zahl von 1 bis 9");
+        txtSpielerZahl.setEnabled(true);
+        txtSpielerZahl.requestFocus();
+    }
+
+    /**
+     * Startet die Anwendung und zeigt das GUI-Fenster an.
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new GewinnView().setVisible(true));
     }
