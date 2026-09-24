@@ -165,6 +165,7 @@ public class GewinnView extends JFrame {
         lblRundenErgebnisWert.setText("Tippe eine Zahl von 1 bis 9");
         txtSpielerZahl.setEnabled(true);
         txtSpielerZahl.requestFocus();
+        btnNochEinmal.setEnabled(false);
     }
 
     /**
