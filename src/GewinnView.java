@@ -152,7 +152,8 @@ public class GewinnView extends JFrame {
             JOptionPane.showMessageDialog(this, "Bitte gib eine gültige Zahl ein!", "Fehler", JOptionPane.ERROR_MESSAGE);
         }
 
-
+        txtSpielerZahl.setEnabled(false);
+        btnNochEinmal.setEnabled(true);
     }
 
     /**
