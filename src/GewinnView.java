@@ -9,8 +9,6 @@ import java.awt.*;
  */
 public class GewinnView extends JFrame {
 
-    private GewinnModel model;
-
     private JLabel lblRundenErgebnisWert;
     private JLabel lblGesamtPunkteWert;
     private JTextField txtSpielerZahl;
@@ -18,15 +16,13 @@ public class GewinnView extends JFrame {
     private JButton btnNochEinmal;
 
     /**
-     * Konstruktor: Initialisiert das Model und baut das Layout auf.
+     * Konstruktor: Baut das Layout auf.
      */
-    public GewinnView() {
-        model = new GewinnModel();
-        // Grundlegende Einstellungen für das Hauptfenster
+    public GewinnView(GewinnModel model) {
         setTitle("Zahlen-Gewinnspiel (v2.0)");
         setSize(450, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Zentriert das Fenster auf dem Bildschirm
+        setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
 
         JPanel panelOben = new JPanel(new GridLayout(2, 2, 5, 5));
@@ -35,13 +31,11 @@ public class GewinnView extends JFrame {
         JLabel lblRundenErgebnisTitel = new JLabel("Rundenergebnis:", SwingConstants.CENTER);
         JLabel lblGesamtPunkteTitel = new JLabel("Gesamtpunkte:", SwingConstants.CENTER);
 
-        // Label für das Rundenergebnis mit weißem Hintergrund laut Anforderung
         lblRundenErgebnisWert = new JLabel("Tippe eine Zahl von 1 bis 9", SwingConstants.CENTER);
         lblRundenErgebnisWert.setOpaque(true);
         lblRundenErgebnisWert.setBackground(Color.WHITE);
         lblRundenErgebnisWert.setFont(new Font("Arial", Font.BOLD, 14));
 
-        // Label für die Gesamtpunkte
         lblGesamtPunkteWert = new JLabel("Gesamtpunkte: " + model.getGesamtPunkte(), SwingConstants.CENTER);
         lblGesamtPunkteWert.setOpaque(true);
         lblGesamtPunkteWert.setBackground(Color.WHITE);
@@ -60,12 +54,10 @@ public class GewinnView extends JFrame {
         JLabel lblDeineZahl = new JLabel("Deine Zahl:", SwingConstants.CENTER);
         JLabel lblComputer = new JLabel("Computer:", SwingConstants.CENTER);
 
-        // Textfeld für die Eingabe des Spielers
         txtSpielerZahl = new JTextField();
         txtSpielerZahl.setHorizontalAlignment(JTextField.CENTER);
         txtSpielerZahl.setFont(new Font("Arial", Font.BOLD, 22));
 
-        // Textfeld für den Computer (nicht bearbeitbar laut Vorgabe)
         txtComputerZahl = new JTextField();
         txtComputerZahl.setHorizontalAlignment(JTextField.CENTER);
         txtComputerZahl.setFont(new Font("Arial", Font.BOLD, 22));
@@ -87,90 +79,24 @@ public class GewinnView extends JFrame {
         panelUnten.add(btnNochEinmal);
 
         add(panelUnten, BorderLayout.SOUTH);
-
-        initController();
-
-        // Registriert den Klick auf den Reset-Button
-        btnNochEinmal.addActionListener(e -> zuruecksetzen());
     }
 
-    /**
-     * Registriert die Enter-Taste im Eingabefeld und verknüpft sie mit der Spiellogik.
-     */
-    public void initController() {
-        txtSpielerZahl.addKeyListener(new java.awt.event.KeyAdapter() {
-            @Override
-            public void keyPressed(java.awt.event.KeyEvent e) {
-                if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
-                    spielZugAusfuehren();
-                }
-            }
-        });
-    }
+    // --- Getter-Methoden für den Controller ---
+    public JTextField getTxtSpielerZahl() { return txtSpielerZahl; }
+    public JTextField getTxtComputerZahl() { return txtComputerZahl; }
+    public JButton getBtnNochEinmal() { return btnNochEinmal; }
+    public JLabel getLblRundenErgebnisWert() { return lblRundenErgebnisWert; }
+    public JLabel getLblGesamtPunkteWert() { return lblGesamtPunkteWert; }
 
     /**
-     * Verarbeitet die Spielereingabe, berechnet die Runde über das Model und aktualisiert die Anzeige.
-     */
-    private void spielZugAusfuehren() {
-        try {
-            String eingabe = txtSpielerZahl.getText().trim();
-            int zahl = Integer.parseInt(eingabe);
-
-            if (zahl < 1 || zahl > 9) {
-                JOptionPane.showMessageDialog(this, "Bitte gib eine Zahl zwischen 1 und 9 ein!", "Ungültige Eingabe", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            model.berechneRunde(zahl);
-            txtComputerZahl.setText(String.valueOf(model.getComputerZahl()));
-
-            // Nur Farb-Logik für Version 2.0 (keine Sperren!)
-            int erg = model.getRundenErgebnis();
-            if (erg == 20) {
-                lblRundenErgebnisWert.setText("Treffer! (+20)");
-                lblRundenErgebnisWert.setBackground(new Color(144, 238, 144)); // Sanftes Grün
-            } else if (erg == 5) {
-                lblRundenErgebnisWert.setText("Knapp daneben! (+5)");
-                lblRundenErgebnisWert.setBackground(new Color(144, 238, 144)); // Sanftes Grün
-            } else {
-                lblRundenErgebnisWert.setText("Verloren (-10)");
-                lblRundenErgebnisWert.setBackground(new Color(255, 182, 193)); // Sanftes Rot
-            }
-            lblGesamtPunkteWert.setText("Gesamtpunkte: " + model.getGesamtPunkte());
-
-            if (model.hatGewonnen()) {
-                JOptionPane.showMessageDialog(this, "Herzlichen Glückwunsch! Du hast gewonnen!", "Gewonnen", JOptionPane.INFORMATION_MESSAGE);
-                lblRundenErgebnisWert.setBackground(Color.GREEN);
-            } else if (model.hatVerloren()) {
-                JOptionPane.showMessageDialog(this, "Leider verloren! Der Punktestand ist bei 0.", "Verloren", JOptionPane.ERROR_MESSAGE);
-                lblRundenErgebnisWert.setBackground(Color.RED);
-            }
-
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Bitte gib eine gültige Zahl ein!", "Fehler", JOptionPane.ERROR_MESSAGE);
-        }
-
-        txtSpielerZahl.setEnabled(false);
-        btnNochEinmal.setEnabled(true);
-    }
-
-    /**
-     * Setzt die Runde und die Eingabefelder zurück (inkl. weißem Hintergrund).
-     */
-    private void zuruecksetzen() {
-        txtSpielerZahl.setText("");
-        txtComputerZahl.setText("");
-        lblRundenErgebnisWert.setText("Tippe eine Zahl von 1 bis 9");
-        lblRundenErgebnisWert.setBackground(Color.WHITE); // Farbe auf Weiß zurücksetzen
-        txtSpielerZahl.setEnabled(true);
-        txtSpielerZahl.requestFocus();
-        btnNochEinmal.setEnabled(false);
-    }
-
-    /**
-     * Startet die Anwendung und zeigt das GUI-Fenster an.
+     * Startet die Anwendung, initialisiert Model, View und Controller.
      */
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new GewinnView().setVisible(true));
+        SwingUtilities.invokeLater(() -> {
+            GewinnModel model = new GewinnModel();
+            GewinnView view = new GewinnView(model);
+            new GewinnController(model, view);
+            view.setVisible(true);
+        });
     }
 }
