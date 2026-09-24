@@ -89,6 +89,7 @@ public class GewinnView extends JFrame {
         panelUnten.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
 
         btnNochEinmal = new JButton("Noch einmal!");
+        btnNochEinmal.setEnabled(false);
         panelUnten.add(btnNochEinmal);
 
         add(panelUnten, BorderLayout.SOUTH);
@@ -150,6 +151,8 @@ public class GewinnView extends JFrame {
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Bitte gib eine gültige Zahl ein!", "Fehler", JOptionPane.ERROR_MESSAGE);
         }
+
+
     }
 
     /**
